@@ -1,48 +1,41 @@
+import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 import { collection, getDocs } from "firebase/firestore";
-import { useEffect } from "react";
-import { useState } from "react";
 import { db } from "./config/firebase";
-import { Link } from "react-router-dom";
+import CourseList from "./components/ui/CourseList";
 
 export default function App() {
+  const { name, instructor } = useSelector((state) => state.filter);
   const [courseList, setCourseList] = useState([]);
+  const [filteredCourses, setFilteredCourses] = useState([]);
 
   const courseCollection = collection(db, "Course");
+
   useEffect(() => {
     const getCourses = async () => {
       try {
         const data = await getDocs(courseCollection);
-        const filteredData = data.docs.map((doc) => ({ ...doc.data(), id: doc.id }));
-        console.log(filteredData);
-        setCourseList(filteredData);
+        const courses = data.docs.map((doc) => ({ ...doc.data(), id: doc.id }));
+        setCourseList(courses);
       } catch (err) {
         console.error(err);
       }
     };
     getCourses();
   }, []);
+
+  useEffect(() => {
+    const filtered = courseList.filter((course) => {
+      const nameMatch = course.name.toLowerCase().includes(name.toLowerCase());
+      const instructorMatch = course.instructor.toLowerCase().includes(instructor.toLowerCase());
+      return nameMatch && instructorMatch;
+    });
+    setFilteredCourses(filtered);
+  }, [name, instructor, courseList]);
+
   return (
-    <div className="">
-      {courseList.map((course) => (
-        <div key={course?.id} className="p-2 border-2 ">
-          <Link
-            to={course?.id}
-            state={{
-              name: course?.name,
-              instructor: course?.instructor,
-              description: course?.description,
-              enrollmentStatus: course?.enrollmentStatus,
-              duration: course?.duration,
-              location: course?.location,
-              requirement: course?.requirement,
-              schedule: course?.schedule,
-              syllabus: course?.syllabus,
-            }}>
-            <div>{course?.name}</div>
-            <div className="">{course?.instructor}</div>
-          </Link>
-        </div>
-      ))}
+    <div className="m-12">
+      <CourseList courseList={filteredCourses} />
     </div>
   );
 }

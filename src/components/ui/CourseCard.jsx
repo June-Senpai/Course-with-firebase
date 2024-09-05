@@ -16,15 +16,15 @@ const CourseCard = () => {
 
   return (
     <div className="border-2 p-2 bg-gray-300">
-      <div>{name}</div>
-      <div className="">{instructor}</div>
-      <div className="">{description}</div>
-      <div className="">{enrollmentStatus}</div>
-      <div className="">{duration}</div>
-      <div className="">{place}</div>
-      <div className="">{requirement}</div>
-      <div className="">{schedule}</div>
-      <div className="">{syllabus}</div>
+      <div>Name of the course{name}</div>
+      <div className="">Instructor name: {instructor}</div>
+      <div className="">Description about the course:{description}</div>
+      <div className="">Status:{enrollmentStatus}</div>
+      <div className="">Duration{duration}min</div>
+      <div className="">Location:{place}</div>
+      <div className="">Prerequisite:{requirement}</div>
+      <div className="">Schedule:{schedule}</div>
+      <div className="">Syllabus:{syllabus}</div>
     </div>
   );
 };
